@@ -3,7 +3,15 @@
 ESP8266 NodeMCU v2 하나로 **두 개의 디스플레이**를 동시에 구동합니다.
 서울 실시간 날씨와 ESP8266 시스템 정보를 **30초마다 자동 전환**하며 보여줍니다.
 
-> `preview.html`을 브라우저에서 열면 실제 화면 미리보기를 확인할 수 있습니다.
+> **[Live Preview](https://jvisualschool.github.io/ESP8266-DualDisplay/preview.html)** - 브라우저에서 실제 화면 미리보기를 확인하세요!
+
+---
+
+## Screenshots
+
+| Hardware | Weather Mode | System Mode |
+|:---:|:---:|:---:|
+| ![Hardware](screenshot1.jpg) | ![Weather](screenshot2.png) | ![System](screenshot3.png) |
 
 ---
 
