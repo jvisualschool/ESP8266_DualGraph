@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESP8266 Dual Display Monitor - Preview</title>
+<title>ESP8266 Graph Gallery - Preview</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -29,39 +29,7 @@
   .subtitle {
     color: #555;
     font-size: 0.85rem;
-    margin-bottom: 40px;
-  }
-
-  .mode-tabs {
-    display: flex;
-    gap: 0;
     margin-bottom: 30px;
-  }
-
-  .mode-tab {
-    padding: 10px 28px;
-    background: #111;
-    border: 1px solid #333;
-    color: #666;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-  }
-
-  .mode-tab:first-child { border-radius: 6px 0 0 6px; }
-  .mode-tab:last-child { border-radius: 0 6px 6px 0; }
-
-  .mode-tab.active {
-    background: #1a1a2e;
-    border-color: #07e0;
-    color: #07e0;
-  }
-
-  .mode-tab.active-sys {
-    background: #1a1a1a;
-    border-color: #fbe0;
-    color: #fbe0;
   }
 
   .displays {
@@ -106,6 +74,12 @@
     image-rendering: pixelated;
   }
 
+  .tft-screen canvas {
+    width: 240px;
+    height: 240px;
+    image-rendering: pixelated;
+  }
+
   /* OLED 128x64 */
   .oled-frame {
     width: 200px;
@@ -125,152 +99,26 @@
     overflow: hidden;
   }
 
-  /* ===== TFT Weather Mode ===== */
-  .tft-weather .title-bar {
-    background: #00003c;
-    padding: 5px 8px;
-    margin: -0px -0px 0 -0px;
-  }
-
-  .tft-weather .title-bar span {
-    color: #00ffff;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .tft-weather .weather-symbol {
-    color: #ffff00;
-    font-size: 14px;
-    margin: 10px 0 4px 8px;
-  }
-
-  .tft-weather .temp {
-    color: #fff;
-    font-size: 36px;
-    font-weight: bold;
-    margin: 2px 0 2px 8px;
-    line-height: 1;
-  }
-
-  .tft-weather .temp .unit {
-    font-size: 16px;
-    vertical-align: top;
-  }
-
-  .tft-weather .desc {
-    color: #bbb;
-    font-size: 14px;
-    margin: 6px 0 8px 8px;
-  }
-
-  .tft-weather .divider {
-    border-top: 1px solid #333;
-    margin: 4px 0;
-  }
-
-  .tft-weather .detail {
-    display: flex;
-    padding: 3px 8px;
-    font-size: 14px;
-  }
-
-  .tft-weather .detail .label { width: 65px; }
-  .tft-weather .detail .value { color: #fff; }
-
-  .label-feel { color: #ffa500; }
-  .label-hum { color: #00ffff; }
-  .label-wind { color: #00ff00; }
-  .label-hpa { color: #ff00ff; }
-
-  /* ===== TFT System Mode ===== */
-  .tft-system .title-bar {
-    background: #222;
-    padding: 6px 16px;
-  }
-
-  .tft-system .title-bar span {
-    color: #fff;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .tft-system .info-row {
-    display: flex;
-    padding: 6px 8px;
-    font-size: 14px;
-  }
-
-  .tft-system .info-row .label { width: 55px; }
-  .tft-system .info-row .value { color: #fff; }
-
-  .label-id { color: #86dfff; }
-  .label-cpu { color: #ffff00; }
-  .label-rom { color: #ffb800; }
-  .label-heap { color: #00ff00; }
-  .label-wifi { color: #86dfff; }
-  .label-up { color: #ffb800; }
-
-  .tft-system .sys-divider {
-    border-top: 1px solid #1a1a1a;
-    margin: 4px 8px;
-  }
-
-  .gauge-container {
-    margin: 4px 8px 2px 8px;
-  }
-
-  .gauge-bar {
-    width: 200px;
-    height: 16px;
-    background: #1a1a1a;
-    border: 1px solid #fff;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .gauge-fill {
-    height: 100%;
-    transition: width 1s;
-  }
-
-  .gauge-fill-green { background: #00ff00; }
-  .gauge-fill-cyan { background: #86dfff; }
-  .gauge-fill-yellow { background: #ffff00; }
-
-  .gauge-text {
-    color: #fff;
-    font-size: 14px;
-    margin: 2px 0 4px 8px;
-  }
-
-  /* ===== OLED Styles ===== */
-  .oled-screen * {
-    color: #cde6ff;
-    font-size: 8px;
-    line-height: 1.4;
-  }
-
-  .oled-screen .time-big {
-    font-size: 16px;
-    text-align: center;
-    letter-spacing: 2px;
-    margin-bottom: 1px;
-  }
-
-  .oled-screen .date-line {
-    font-size: 8px;
-    text-align: center;
-    margin-bottom: 3px;
-  }
-
   .oled-screen .oled-divider {
     border-top: 1px solid #cde6ff;
     margin: 2px 0;
   }
 
-  .oled-screen .oled-row {
-    padding: 1px 0;
+  /* Graph gallery OLED */
+  .oled-graph-num {
     font-size: 8px;
+    color: #cde6ff;
+  }
+  .oled-graph-name {
+    font-size: 14px;
+    color: #cde6ff;
+    font-weight: bold;
+    margin: 2px 0;
+  }
+  .oled-graph-desc {
+    font-size: 8px;
+    color: #cde6ff;
+    line-height: 1.5;
   }
 
   /* ===== Timer ===== */
@@ -301,6 +149,39 @@
     color: #555;
     font-size: 0.75rem;
     margin-top: 6px;
+  }
+
+  /* ===== Graph nav ===== */
+  .graph-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 600px;
+  }
+
+  .graph-nav-btn {
+    padding: 4px 10px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #666;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+  }
+
+  .graph-nav-btn.active {
+    background: #0a2a20;
+    border-color: #07e0;
+    color: #fff;
+  }
+
+  .graph-nav-btn:hover {
+    border-color: #555;
+    color: #aaa;
   }
 
   .hardware-info {
@@ -335,108 +216,37 @@
 
   .hw-card .hw-row .hw-label { color: #777; }
   .hw-card .hw-row .hw-value { color: #aaa; }
-
-  .hidden { display: none; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .live-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #0f0;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-    margin-right: 6px;
-  }
 </style>
 </head>
 <body>
 
-<h1>ESP8266 DUAL DISPLAY MONITOR</h1>
+<h1>ESP8266 GRAPH GALLERY</h1>
 <p class="subtitle">NodeMCU v2 + SSD1306 OLED + ST7789 TFT</p>
 
-<div class="mode-tabs">
-  <div class="mode-tab active" id="tab-weather" onclick="switchMode('weather')">
-    <span class="live-dot"></span>WEATHER
-  </div>
-  <div class="mode-tab" id="tab-system" onclick="switchMode('system')">
-    <span class="live-dot" style="background:#ffb800"></span>SYSTEM
-  </div>
-</div>
+<div class="graph-nav" id="graph-nav"></div>
 
 <div class="displays">
 
-  <!-- TFT Display -->
+  <!-- TFT Canvas -->
   <div class="display-group">
     <div class="display-label">ST7789 TFT 240x240</div>
     <div class="tft-frame">
       <div class="tft-screen">
-
-        <!-- Weather Mode -->
-        <div class="tft-weather" id="tft-weather">
-          <div class="title-bar"><span>Seoul Weather</span></div>
-          <div class="weather-symbol" id="weather-symbol">Cloud</div>
-          <div class="temp" id="weather-temp">-0.2<span class="unit">'C</span></div>
-          <div class="desc" id="weather-desc">overcast clouds</div>
-          <div class="divider"></div>
-          <div class="detail"><span class="label label-feel">Feel</span><span class="value" id="w-feel">-3.1'C</span></div>
-          <div class="detail"><span class="label label-hum">Hum</span><span class="value" id="w-hum">72%</span></div>
-          <div class="detail"><span class="label label-wind">Wind</span><span class="value" id="w-wind">2.3m/s</span></div>
-          <div class="detail"><span class="label label-hpa">hPa</span><span class="value" id="w-hpa">1025</span></div>
-        </div>
-
-        <!-- System Mode -->
-        <div class="tft-system hidden" id="tft-system">
-          <div class="title-bar"><span>ESP8266 Info</span></div>
-          <div class="info-row"><span class="label label-id">ID</span><span class="value">86B1C7</span></div>
-          <div class="info-row"><span class="label label-cpu">CPU</span><span class="value">80 MHz</span></div>
-          <div class="info-row"><span class="label label-rom">ROM</span><span class="value">4096 KB</span></div>
-          <div class="sys-divider"></div>
-          <div class="info-row"><span class="label label-heap">HEAP</span><span class="value" id="sys-heap-text">38KB</span></div>
-          <div class="gauge-container">
-            <div class="gauge-bar"><div class="gauge-fill gauge-fill-green" id="heap-gauge" style="width:54%"></div></div>
-          </div>
-          <div class="gauge-text" id="heap-percent">54% used</div>
-          <div class="info-row"><span class="label label-wifi">WiFi</span><span class="value" id="sys-rssi">-42dBm</span></div>
-          <div class="gauge-container">
-            <div class="gauge-bar"><div class="gauge-fill gauge-fill-cyan" id="wifi-gauge" style="width:76%"></div></div>
-          </div>
-          <div class="info-row" style="margin-top:4px"><span class="label label-up">UP</span><span class="value" id="sys-uptime">2h 15m 30s</span></div>
-        </div>
-
+        <canvas id="tft-canvas" width="240" height="240"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- OLED Display -->
+  <!-- OLED Info -->
   <div class="display-group">
     <div class="display-label">SSD1306 OLED 128x64</div>
     <div class="oled-frame">
-      <div class="oled-screen">
-
-        <!-- Weather OLED -->
-        <div id="oled-weather">
-          <div class="time-big" id="oled-time">15:42:30</div>
-          <div class="date-line" id="oled-date">2026-02-16</div>
-          <div class="oled-divider"></div>
-          <div class="oled-row">WiFi: -42dBm</div>
-          <div class="oled-row">IP:192.168.0.111</div>
-          <div class="oled-row" id="oled-upd">Upd: 125s ago</div>
-        </div>
-
-        <!-- System OLED -->
-        <div id="oled-system" class="hidden">
-          <div class="oled-row">SSID:MY_WIFI</div>
-          <div class="oled-row">IP: 192.168.0.111</div>
-          <div class="oled-row">MAC:48:3F:DA:86:B1:C7</div>
-          <div class="oled-divider"></div>
-          <div class="oled-row" id="oled-heap">Heap: 38KB free</div>
-          <div class="oled-row" id="oled-up">Up: 2h 15m 30s</div>
-        </div>
-
+      <div class="oled-screen" id="oled-gallery">
+        <div class="oled-graph-num" id="oled-gnum">1 / 15</div>
+        <div class="oled-graph-name" id="oled-gname">Sine Wave</div>
+        <div class="oled-divider"></div>
+        <div class="oled-graph-desc" id="oled-gdesc1">Periodic function</div>
+        <div class="oled-graph-desc" id="oled-gdesc2">y = sin(x)</div>
       </div>
     </div>
   </div>
@@ -446,9 +256,9 @@
 <!-- Timer -->
 <div class="timer-bar">
   <div class="timer-track">
-    <div class="timer-fill" id="timer-fill" style="width:0%"></div>
+    <div class="timer-fill" id="gallery-timer-fill" style="width:0%"></div>
   </div>
-  <div class="timer-text" id="timer-text">30s auto rotation</div>
+  <div class="timer-text" id="gallery-timer-text">Graph 1/15</div>
 </div>
 
 <!-- Hardware Info -->
@@ -469,85 +279,690 @@
     <div class="hw-row"><span class="hw-label">OLED I2C</span><span class="hw-value">D5,D6 (0x3C)</span></div>
   </div>
   <div class="hw-card">
-    <h3>CONNECTIONS</h3>
-    <div class="hw-row"><span class="hw-label">WiFi</span><span class="hw-value">config.h</span></div>
-    <div class="hw-row"><span class="hw-label">API</span><span class="hw-value">OpenWeatherMap</span></div>
-    <div class="hw-row"><span class="hw-label">NTP</span><span class="hw-value">pool.ntp.org</span></div>
+    <h3>GRAPH GALLERY</h3>
+    <div class="hw-row"><span class="hw-label">Graphs</span><span class="hw-value">15 types</span></div>
+    <div class="hw-row"><span class="hw-label">WiFi</span><span class="hw-value">Not required</span></div>
+    <div class="hw-row"><span class="hw-label">Drawing</span><span class="hw-value">Incremental</span></div>
     <div class="hw-row"><span class="hw-label">Power</span><span class="hw-value">USB-C (5V)</span></div>
   </div>
 </div>
 
 <script>
-let currentMode = 'weather';
-let timerStart = Date.now();
-const INTERVAL = 30000;
+// ========== Graph Gallery ==========
+const graphDefs = [
+  { name: 'Sine Wave',    d1: 'Periodic function', d2: 'y = sin(x)',       maxSteps: 210, draw: drawSineWave },
+  { name: 'Bar Chart',    d1: 'Category compare',  d2: '5 data bars',      maxSteps: 65,  draw: drawBarChart },
+  { name: 'Pie Chart',    d1: 'Proportions',       d2: 'Arc segments',     maxSteps: 40,  draw: drawPieChart },
+  { name: 'Line Graph',   d1: 'Trend analysis',    d2: 'Multi-series',     maxSteps: 200, draw: drawLineGraph },
+  { name: 'Scatter Plot', d1: 'Correlation',        d2: 'Random points',   maxSteps: 55,  draw: drawScatterPlot },
+  { name: 'Radar Chart',  d1: 'Multi-axis',        d2: 'Pentagon shape',   maxSteps: 40,  draw: drawRadarChart },
+  { name: 'Area Chart',   d1: 'Cumulative',        d2: 'Filled curve',     maxSteps: 130, draw: drawAreaChart },
+  { name: 'Gauge',        d1: 'Single value',      d2: 'Needle + arc',     maxSteps: 60,  draw: drawGaugeMeter },
+  { name: 'Histogram',    d1: 'Distribution',      d2: 'Frequency bins',   maxSteps: 65,  draw: drawHistogram },
+  { name: 'Spiral',       d1: 'Archimedes',        d2: 'r = a + b*theta',  maxSteps: 130, draw: drawSpiral },
+  { name: 'Lissajous',    d1: 'Frequency ratio',   d2: 'Parametric XY',    maxSteps: 200, draw: drawLissajous },
+  { name: 'Rose Curve',   d1: 'Polar coords',      d2: 'r = cos(7*theta)', maxSteps: 200, draw: drawRoseCurve },
+  { name: 'Heart Curve',  d1: 'Parametric',        d2: 'Love equation',    maxSteps: 130, draw: drawHeartCurve },
+  { name: 'Starfield',    d1: '3D perspective',    d2: 'Radial expansion', maxSteps: 80,  draw: drawStarfield },
+  { name: 'Matrix Rain',  d1: 'Digital rain',      d2: 'Falling chars',    maxSteps: 100, draw: drawMatrixRain },
+];
 
-function switchMode(mode) {
-  currentMode = mode;
-  timerStart = Date.now();
+let gCanvas, gCtx;
+let gCurrent = 0;
+let gStep = 0;
+let gAnimId = null;
+let gHoldTimeout = null;
+let gData = {};
 
-  document.getElementById('tft-weather').classList.toggle('hidden', mode !== 'weather');
-  document.getElementById('tft-system').classList.toggle('hidden', mode !== 'system');
-  document.getElementById('oled-weather').classList.toggle('hidden', mode !== 'weather');
-  document.getElementById('oled-system').classList.toggle('hidden', mode !== 'system');
+function startGallery() {
+  gCanvas = document.getElementById('tft-canvas');
+  gCtx = gCanvas.getContext('2d');
 
-  document.getElementById('tab-weather').className = mode === 'weather' ? 'mode-tab active' : 'mode-tab';
-  document.getElementById('tab-system').className = mode === 'system' ? 'mode-tab active-sys' : 'mode-tab';
+  // Build nav buttons
+  const nav = document.getElementById('graph-nav');
+  nav.innerHTML = '';
+  graphDefs.forEach((g, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'graph-nav-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = (i + 1) + '. ' + g.name;
+    btn.onclick = () => jumpToGraph(i);
+    btn.id = 'gnav-' + i;
+    nav.appendChild(btn);
+  });
+
+  gCurrent = 0;
+  initGraph(gCurrent);
+  runGalleryLoop();
 }
 
-function updateClock() {
-  const now = new Date();
-  const time = now.toTimeString().slice(0, 8);
-  const date = now.toISOString().slice(0, 10);
-  document.getElementById('oled-time').textContent = time;
-  document.getElementById('oled-date').textContent = date;
+function jumpToGraph(idx) {
+  if (gAnimId) cancelAnimationFrame(gAnimId);
+  if (gHoldTimeout) clearTimeout(gHoldTimeout);
+  gCurrent = idx;
+  initGraph(idx);
+  runGalleryLoop();
 }
 
-function updateTimer() {
-  const elapsed = Date.now() - timerStart;
-  const percent = Math.min((elapsed / INTERVAL) * 100, 100);
-  document.getElementById('timer-fill').style.width = percent + '%';
+function initGraph(idx) {
+  gStep = 0;
+  gData = {};
+  gCtx.fillStyle = '#000';
+  gCtx.fillRect(0, 0, 240, 240);
 
-  const remaining = Math.max(0, Math.ceil((INTERVAL - elapsed) / 1000));
-  document.getElementById('timer-text').textContent =
-    currentMode.toUpperCase() + ' mode - ' + remaining + 's';
+  // Title bar
+  gCtx.fillStyle = '#222';
+  gCtx.fillRect(0, 0, 240, 24);
+  gCtx.fillStyle = '#00ffff';
+  gCtx.font = 'bold 14px Courier New';
+  gCtx.fillText(graphDefs[idx].name, 8, 17);
 
-  if (elapsed >= INTERVAL) {
-    switchMode(currentMode === 'weather' ? 'system' : 'weather');
+  // OLED
+  document.getElementById('oled-gnum').textContent = (idx + 1) + ' / ' + graphDefs.length;
+  document.getElementById('oled-gname').textContent = graphDefs[idx].name;
+  document.getElementById('oled-gdesc1').textContent = graphDefs[idx].d1;
+  document.getElementById('oled-gdesc2').textContent = graphDefs[idx].d2;
+
+  // Nav buttons
+  document.querySelectorAll('.graph-nav-btn').forEach((b, i) => {
+    b.className = 'graph-nav-btn' + (i === idx ? ' active' : '');
+  });
+
+  // Init graph-specific data
+  graphDefs[idx].draw('init');
+}
+
+function runGalleryLoop() {
+  const def = graphDefs[gCurrent];
+
+  if (gStep < def.maxSteps) {
+    def.draw(gStep);
+    // Redraw title bar on top so graphs don't overwrite it
+    gCtx.fillStyle = '#222';
+    gCtx.fillRect(0, 0, 240, 24);
+    gCtx.fillStyle = '#00ffff';
+    gCtx.font = 'bold 14px Courier New';
+    gCtx.textAlign = 'start';
+    gCtx.textBaseline = 'alphabetic';
+    gCtx.fillText(graphDefs[gCurrent].name, 8, 17);
+    gStep++;
+
+    const pct = (gStep / def.maxSteps * 100).toFixed(0);
+    document.getElementById('gallery-timer-fill').style.width = pct + '%';
+    document.getElementById('gallery-timer-text').textContent =
+      'Graph ' + (gCurrent + 1) + '/' + graphDefs.length + ' - ' + graphDefs[gCurrent].name;
+
+    gAnimId = requestAnimationFrame(runGalleryLoop);
+  } else {
+    document.getElementById('gallery-timer-fill').style.width = '100%';
+    gHoldTimeout = setTimeout(() => {
+      gCurrent = (gCurrent + 1) % graphDefs.length;
+      initGraph(gCurrent);
+      runGalleryLoop();
+    }, 0);
   }
 }
 
-function simulateData() {
-  // Randomize heap
-  const heap = 35 + Math.floor(Math.random() * 10);
-  const heapPercent = Math.round((81920 - heap * 1024) / 81920 * 100);
-  document.getElementById('sys-heap-text').textContent = heap + 'KB';
-  document.getElementById('heap-percent').textContent = heapPercent + '% used';
-  document.getElementById('heap-gauge').style.width = heapPercent + '%';
-  document.getElementById('oled-heap').textContent = 'Heap: ' + heap + 'KB free';
+// ========== Graph Drawing Functions ==========
 
-  // Randomize WiFi
-  const rssi = -35 - Math.floor(Math.random() * 20);
-  const wifiPercent = Math.min(Math.max(2 * (rssi + 100), 0), 100);
-  document.getElementById('sys-rssi').textContent = rssi + 'dBm';
-  document.getElementById('wifi-gauge').style.width = wifiPercent + '%';
-
-  // Uptime
-  const sec = Math.floor((Date.now() % 86400000) / 1000);
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  const s = sec % 60;
-  const upStr = h + 'h ' + m + 'm ' + s + 's';
-  document.getElementById('sys-uptime').textContent = upStr;
-  document.getElementById('oled-up').textContent = 'Up: ' + upStr;
+function drawAxesHelper(x0, y0, w, h) {
+  gCtx.strokeStyle = '#333';
+  gCtx.lineWidth = 1;
+  gCtx.beginPath();
+  gCtx.moveTo(x0, y0 - h);
+  gCtx.lineTo(x0, y0);
+  gCtx.lineTo(x0 + w, y0);
+  gCtx.stroke();
 }
 
-setInterval(updateClock, 1000);
-setInterval(updateTimer, 100);
-setInterval(simulateData, 3000);
+// 1. Sine Wave
+function drawSineWave(s) {
+  if (s === 'init') {
+    drawAxesHelper(15, 180, 210, 130);
+    gCtx.fillStyle = '#888';
+    gCtx.font = '10px Courier New';
+    gCtx.fillText('1', 2, 52);
+    gCtx.fillText('0', 2, 115);
+    gCtx.fillText('-1', 0, 178);
+    return;
+  }
+  if (s >= 210) return;
+  const x = s * (4 * Math.PI) / 210;
+  const px = 16 + s;
+  const py = 115 - Math.sin(x) * 60;
+  if (s > 0) {
+    const xp = (s - 1) * (4 * Math.PI) / 210;
+    const ppx = 16 + (s - 1);
+    const ppy = 115 - Math.sin(xp) * 60;
+    gCtx.strokeStyle = '#00ff00';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(ppx, ppy);
+    gCtx.lineTo(px, py);
+    gCtx.stroke();
+  }
+  gCtx.fillStyle = '#ffff00';
+  gCtx.beginPath();
+  gCtx.arc(px, py, 3, 0, Math.PI * 2);
+  gCtx.fill();
+  if (s > 1) {
+    const xpp = (s - 1) * (4 * Math.PI) / 210;
+    const ppx2 = 16 + (s - 1);
+    const ppy2 = 115 - Math.sin(xpp) * 60;
+    gCtx.fillStyle = '#00ff00';
+    gCtx.beginPath();
+    gCtx.arc(ppx2, ppy2, 3, 0, Math.PI * 2);
+    gCtx.fill();
+  }
+}
 
-updateClock();
-simulateData();
+// 2. Bar Chart
+function drawBarChart(s) {
+  if (s === 'init') {
+    gData.bars = [75, 45, 90, 60, 85];
+    gData.colors = ['#ff0000', '#00ff00', '#4444ff', '#ff8800', '#8800ff'];
+    drawAxesHelper(25, 220, 200, 180);
+    gCtx.fillStyle = '#888';
+    gCtx.font = '10px Courier New';
+    ['A','B','C','D','E'].forEach((l, i) => gCtx.fillText(l, 45 + i * 38, 234));
+    return;
+  }
+  const bars = gData.bars;
+  const colors = gData.colors;
+  for (let i = 0; i < 5; i++) {
+    const maxH = bars[i] * 1.7;
+    const curH = maxH * Math.min(s / 65, 1);
+    const barX = 30 + i * 38;
+    const barY = 220 - curH;
+    gCtx.fillStyle = colors[i];
+    gCtx.fillRect(barX, barY, 30, curH);
+  }
+}
+
+// 3. Pie Chart
+function drawPieChart(s) {
+  if (s === 'init') {
+    gData.slices = [30, 25, 20, 15, 10];
+    gData.colors = ['#ff0000', '#ff8800', '#00ff00', '#00ffff', '#8800ff'];
+    gCtx.strokeStyle = '#333';
+    gCtx.beginPath();
+    gCtx.arc(120, 135, 81, 0, Math.PI * 2);
+    gCtx.stroke();
+    return;
+  }
+  const totalAngle = (s / 40) * Math.PI * 2;
+  let angle = -Math.PI / 2;
+  for (let i = 0; i < 5; i++) {
+    const sweep = (gData.slices[i] / 100) * Math.PI * 2;
+    const drawSweep = Math.min(sweep, Math.max(0, totalAngle - (angle + Math.PI / 2)));
+    if (drawSweep <= 0) { angle += sweep; continue; }
+    gCtx.fillStyle = gData.colors[i];
+    gCtx.beginPath();
+    gCtx.moveTo(120, 135);
+    gCtx.arc(120, 135, 80, angle, angle + drawSweep);
+    gCtx.closePath();
+    gCtx.fill();
+    angle += sweep;
+  }
+
+  // Draw labels at last step
+  if (s === 39) {
+    const labels = ['A', 'B', 'C', 'D', 'E'];
+    let acc = 0;
+    gCtx.font = 'bold 14px Courier New';
+    gCtx.fillStyle = '#fff';
+    gCtx.textAlign = 'center';
+    gCtx.textBaseline = 'middle';
+    for (let i = 0; i < 5; i++) {
+      const sweep2 = (gData.slices[i] / 100) * Math.PI * 2;
+      const midA = -Math.PI / 2 + acc + sweep2 / 2;
+      const lx = 120 + 50 * Math.cos(midA);
+      const ly = 135 + 50 * Math.sin(midA);
+      gCtx.fillText(labels[i], lx, ly);
+      acc += sweep2;
+    }
+    gCtx.textAlign = 'start';
+    gCtx.textBaseline = 'alphabetic';
+  }
+}
+
+// 4. Line Graph
+function drawLineGraph(s) {
+  if (s === 'init') {
+    gData.lines = [];
+    const colors = ['#ff0000', '#00ff00', '#00ffff'];
+    for (let j = 0; j < 3; j++) {
+      let val = 50 + Math.random() * 30;
+      const pts = [];
+      for (let i = 0; i < 50; i++) {
+        val += (Math.random() * 10 - 5) * 0.5;
+        val = Math.max(10, Math.min(100, val));
+        pts.push(val);
+      }
+      gData.lines.push({ pts, color: colors[j] });
+    }
+    drawAxesHelper(25, 220, 200, 180);
+    gCtx.font = '10px Courier New';
+    gCtx.fillStyle = '#ff0000'; gCtx.fillText('S1', 180, 37);
+    gCtx.fillStyle = '#00ff00'; gCtx.fillText('S2', 200, 37);
+    gCtx.fillStyle = '#00ffff'; gCtx.fillText('S3', 220, 37);
+    return;
+  }
+  const idx = Math.floor(s / 4);
+  if (idx < 1 || idx >= 50) return;
+  gData.lines.forEach(line => {
+    const x1 = 26 + (idx - 1) * 4;
+    const y1 = 220 - line.pts[idx - 1] * 1.7;
+    const x2 = 26 + idx * 4;
+    const y2 = 220 - line.pts[idx] * 1.7;
+    gCtx.strokeStyle = line.color;
+    gCtx.lineWidth = 1.5;
+    gCtx.beginPath();
+    gCtx.moveTo(x1, y1);
+    gCtx.lineTo(x2, y2);
+    gCtx.stroke();
+  });
+}
+
+// 5. Scatter Plot
+function drawScatterPlot(s) {
+  if (s === 'init') {
+    gData.pts = [];
+    for (let i = 0; i < 80; i++) {
+      const bx = Math.random() * 200;
+      gData.pts.push({ x: bx, y: bx * 0.7 + (Math.random() * 80 - 40) });
+    }
+    drawAxesHelper(25, 220, 200, 180);
+    return;
+  }
+  if (s >= 80) return;
+  const p = gData.pts[s];
+  const px = 26 + p.x;
+  const py = 220 - Math.max(0, Math.min(170, p.y));
+  gCtx.fillStyle = '#00ffff';
+  gCtx.beginPath();
+  gCtx.arc(px, py, 3, 0, Math.PI * 2);
+  gCtx.fill();
+  gCtx.strokeStyle = '#fff';
+  gCtx.lineWidth = 1;
+  gCtx.beginPath();
+  gCtx.arc(px, py, 3, 0, Math.PI * 2);
+  gCtx.stroke();
+}
+
+// 6. Radar Chart
+function drawRadarChart(s) {
+  const cx = 120, cy = 140, maxR = 80;
+  if (s === 'init') {
+    gData.values = [0.9, 0.6, 0.8, 0.5, 0.7];
+    const labels = ['STR', 'DEX', 'INT', 'WIS', 'CHA'];
+    for (let ring = 1; ring <= 4; ring++) {
+      const r = maxR * ring / 4;
+      gCtx.strokeStyle = '#333';
+      gCtx.beginPath();
+      for (let i = 0; i <= 5; i++) {
+        const a = (i % 5) * (Math.PI * 2 / 5) - Math.PI / 2;
+        const method = i === 0 ? 'moveTo' : 'lineTo';
+        gCtx[method](cx + r * Math.cos(a), cy + r * Math.sin(a));
+      }
+      gCtx.stroke();
+    }
+    gCtx.fillStyle = '#888';
+    gCtx.font = '10px Courier New';
+    for (let i = 0; i < 5; i++) {
+      const a = i * (Math.PI * 2 / 5) - Math.PI / 2;
+      gCtx.strokeStyle = '#333';
+      gCtx.beginPath();
+      gCtx.moveTo(cx, cy);
+      gCtx.lineTo(cx + maxR * Math.cos(a), cy + maxR * Math.sin(a));
+      gCtx.stroke();
+      gCtx.fillText(labels[i], cx + (maxR + 10) * Math.cos(a) - 10, cy + (maxR + 10) * Math.sin(a) + 4);
+    }
+    return;
+  }
+  const scale = Math.min(s / 27, 1);
+  gCtx.strokeStyle = '#00ff00';
+  gCtx.lineWidth = 2;
+  gCtx.beginPath();
+  for (let i = 0; i <= 5; i++) {
+    const idx2 = i % 5;
+    const a = idx2 * (Math.PI * 2 / 5) - Math.PI / 2;
+    const r = maxR * gData.values[idx2] * scale;
+    const method = i === 0 ? 'moveTo' : 'lineTo';
+    gCtx[method](cx + r * Math.cos(a), cy + r * Math.sin(a));
+  }
+  gCtx.stroke();
+  if (s >= 27) {
+    for (let i = 0; i < 5; i++) {
+      const a = i * (Math.PI * 2 / 5) - Math.PI / 2;
+      const r = maxR * gData.values[i];
+      gCtx.fillStyle = '#ffff00';
+      gCtx.beginPath();
+      gCtx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), 4, 0, Math.PI * 2);
+      gCtx.fill();
+    }
+  }
+}
+
+// 7. Area Chart
+function drawAreaChart(s) {
+  if (s === 'init') {
+    gData.pts = [];
+    let val = 40;
+    for (let i = 0; i < 50; i++) {
+      val += (Math.random() * 10 - 4.5) * 0.8;
+      val = Math.max(10, Math.min(100, val));
+      gData.pts.push(val);
+    }
+    drawAxesHelper(20, 225, 210, 190);
+    return;
+  }
+  const idx = Math.floor(s / 4);
+  if (idx >= 50) return;
+  const x = 21 + idx * 4;
+  const yTop = 225 - gData.pts[idx] * 1.8;
+  gCtx.fillStyle = 'rgba(0, 80, 0, 0.6)';
+  gCtx.fillRect(x, yTop, 4, 225 - yTop);
+  if (idx > 0) {
+    const px = 21 + (idx - 1) * 4;
+    const py = 225 - gData.pts[idx - 1] * 1.8;
+    gCtx.strokeStyle = '#00ff00';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(px, py);
+    gCtx.lineTo(x, yTop);
+    gCtx.stroke();
+  }
+  gCtx.fillStyle = '#ffff00';
+  gCtx.beginPath();
+  gCtx.arc(x, yTop, 2, 0, Math.PI * 2);
+  gCtx.fill();
+}
+
+// 8. Gauge Meter
+function drawGaugeMeter(s) {
+  const cx = 120, cy = 155, r = 90;
+  if (s === 'init') {
+    gCtx.strokeStyle = '#333';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
+    gCtx.stroke();
+    gCtx.fillStyle = '#888';
+    gCtx.font = '10px Courier New';
+    for (let i = 0; i <= 10; i++) {
+      const a = Math.PI + i * Math.PI / 10;
+      gCtx.strokeStyle = '#888';
+      gCtx.lineWidth = 1;
+      gCtx.beginPath();
+      gCtx.moveTo(cx + (r - 5) * Math.cos(a), cy + (r - 5) * Math.sin(a));
+      gCtx.lineTo(cx + (r + 5) * Math.cos(a), cy + (r + 5) * Math.sin(a));
+      gCtx.stroke();
+    }
+    gCtx.fillText('0', 20, cy + 15);
+    gCtx.fillText('100', 205, cy + 15);
+    return;
+  }
+  const targetVal = 72;
+  const val = targetVal * Math.min(s / 40, 1);
+  const angle = Math.PI + (val / 100) * Math.PI;
+
+  gCtx.lineWidth = 8;
+  const steps2 = 100;
+  for (let i = 0; i < steps2; i++) {
+    const a = Math.PI + (i / steps2) * (val / 100) * Math.PI;
+    const ratio = (a - Math.PI) / Math.PI;
+    if (ratio < 0.5) gCtx.strokeStyle = '#00ff00';
+    else if (ratio < 0.8) gCtx.strokeStyle = '#ffff00';
+    else gCtx.strokeStyle = '#ff0000';
+    const nextA = Math.PI + ((i + 1) / steps2) * (val / 100) * Math.PI;
+    gCtx.beginPath();
+    gCtx.arc(cx, cy, 80, a, nextA + 0.02);
+    gCtx.stroke();
+  }
+
+  gCtx.strokeStyle = '#000';
+  gCtx.lineWidth = 4;
+  gCtx.beginPath();
+  gCtx.moveTo(cx, cy);
+  if (s > 0) {
+    const prevVal = targetVal * Math.min((s - 1) / 40, 1);
+    const prevA = Math.PI + (prevVal / 100) * Math.PI;
+    gCtx.lineTo(cx + 65 * Math.cos(prevA), cy + 65 * Math.sin(prevA));
+  }
+  gCtx.stroke();
+
+  gCtx.strokeStyle = '#fff';
+  gCtx.lineWidth = 2;
+  gCtx.beginPath();
+  gCtx.moveTo(cx, cy);
+  gCtx.lineTo(cx + 65 * Math.cos(angle), cy + 65 * Math.sin(angle));
+  gCtx.stroke();
+
+  gCtx.fillStyle = '#ff0000';
+  gCtx.beginPath();
+  gCtx.arc(cx, cy, 5, 0, Math.PI * 2);
+  gCtx.fill();
+
+  if (s % 5 === 0) {
+    gCtx.fillStyle = '#000';
+    gCtx.fillRect(85, 195, 70, 25);
+    gCtx.fillStyle = '#fff';
+    gCtx.font = 'bold 18px Courier New';
+    gCtx.fillText(Math.round(val) + '%', 95, 213);
+  }
+}
+
+// 9. Histogram
+function drawHistogram(s) {
+  if (s === 'init') {
+    gData.bins = [];
+    for (let i = 0; i < 12; i++) gData.bins[i] = 0;
+    for (let i = 0; i < 200; i++) {
+      const v = Math.floor((Math.random() * 12 + Math.random() * 12) / 2);
+      if (v >= 0 && v < 12) gData.bins[v]++;
+    }
+    drawAxesHelper(20, 225, 210, 190);
+    return;
+  }
+  for (let i = 0; i < 12; i++) {
+    const maxH = gData.bins[i] * 4;
+    const curH = maxH * Math.min(s / 65, 1);
+    const barX = 24 + i * 17;
+    const barY = 225 - curH;
+    gCtx.fillStyle = i < 4 ? '#4444ff' : (i < 8 ? '#00ffff' : '#4444ff');
+    gCtx.fillRect(barX, barY, 15, curH);
+  }
+}
+
+// 10. Spiral
+function drawSpiral(s) {
+  if (s === 'init') return;
+  const maxTheta = 6 * Math.PI;
+  const theta = maxTheta * s / 130;
+  const r = 3 + theta * 5.5;
+  const cx = 120, cy = 140;
+  const x = cx + r * Math.cos(theta);
+  const y = cy + r * Math.sin(theta);
+  if (s > 0) {
+    const pt = maxTheta * (s - 1) / 130;
+    const pr = 3 + pt * 5.5;
+    const px = cx + pr * Math.cos(pt);
+    const py = cy + pr * Math.sin(pt);
+    const hue = (s / 130) * 360;
+    gCtx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(px, py);
+    gCtx.lineTo(x, y);
+    gCtx.stroke();
+  }
+}
+
+// 11. Lissajous
+function drawLissajous(s) {
+  if (s === 'init') {
+    gCtx.fillStyle = '#888';
+    gCtx.font = '10px Courier New';
+    gCtx.fillText('x=sin(5t) y=sin(4t)', 8, 234);
+    return;
+  }
+  const cx = 120, cy = 132;
+  const t = s * 2 * Math.PI / 200;
+  const x = cx + 95 * Math.sin(5 * t);
+  const y = cy + 85 * Math.sin(4 * t);
+  if (s > 0) {
+    const pt = (s - 1) * 2 * Math.PI / 200;
+    const px = cx + 95 * Math.sin(5 * pt);
+    const py = cy + 85 * Math.sin(4 * pt);
+    const g = 100 + Math.floor(s * 155 / 200);
+    gCtx.strokeStyle = `rgb(0, ${g}, 255)`;
+    gCtx.lineWidth = 1.5;
+    gCtx.beginPath();
+    gCtx.moveTo(px, py);
+    gCtx.lineTo(x, y);
+    gCtx.stroke();
+  }
+}
+
+// 12. Rose Curve
+function drawRoseCurve(s) {
+  if (s === 'init') {
+    gCtx.fillStyle = '#888';
+    gCtx.font = '10px Courier New';
+    gCtx.fillText('r = cos(7*theta)', 8, 234);
+    return;
+  }
+  const cx = 120, cy = 135;
+  const theta = s * 2 * Math.PI / 200;
+  const r = 90 * Math.cos(7 * theta);
+  const x = cx + r * Math.cos(theta);
+  const y = cy + r * Math.sin(theta);
+  if (s > 0) {
+    const pt = (s - 1) * 2 * Math.PI / 200;
+    const pr = 90 * Math.cos(7 * pt);
+    const px = cx + pr * Math.cos(pt);
+    const py = cy + pr * Math.sin(pt);
+    gCtx.strokeStyle = '#ff00ff';
+    gCtx.lineWidth = 1.5;
+    gCtx.beginPath();
+    gCtx.moveTo(px, py);
+    gCtx.lineTo(x, y);
+    gCtx.stroke();
+  }
+}
+
+// 13. Heart Curve
+function drawHeartCurve(s) {
+  if (s === 'init') return;
+  const cx = 120, cy = 130, scale = 6.5;
+  const t = s * 2 * Math.PI / 130;
+  const hx = 16 * Math.pow(Math.sin(t), 3);
+  const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+  const x = cx + hx * scale;
+  const y = cy + hy * scale;
+  if (s > 0) {
+    const pt = (s - 1) * 2 * Math.PI / 130;
+    const phx = 16 * Math.pow(Math.sin(pt), 3);
+    const phy = -(13 * Math.cos(pt) - 5 * Math.cos(2 * pt) - 2 * Math.cos(3 * pt) - Math.cos(4 * pt));
+    const px = cx + phx * scale;
+    const py = cy + phy * scale;
+    gCtx.strokeStyle = '#ff0000';
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(px, py);
+    gCtx.lineTo(x, y);
+    gCtx.stroke();
+  }
+  if (s > 50 && s % 3 === 0) {
+    gCtx.strokeStyle = 'rgba(128, 0, 0, 0.3)';
+    gCtx.lineWidth = 1;
+    gCtx.beginPath();
+    gCtx.moveTo(cx, cy + 10);
+    gCtx.lineTo(x, y);
+    gCtx.stroke();
+  }
+}
+
+// 14. Starfield
+function drawStarfield(s) {
+  if (s === 'init') {
+    gData.stars = [];
+    for (let i = 0; i < 40; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      gData.stars.push({
+        dx: Math.cos(angle),
+        dy: Math.sin(angle),
+        z: 1 + Math.random() * 5
+      });
+    }
+    return;
+  }
+  const cx = 120, cy = 130;
+  if (s > 0) {
+    const prevExp = 1 + (s - 1) * 0.8;
+    gData.stars.forEach(star => {
+      const r = star.z * prevExp;
+      const x = cx + star.dx * r;
+      const y = cy + star.dy * r;
+      const sz = Math.max(1, Math.floor(r / 30));
+      if (x > 0 && x < 240 && y > 25 && y < 240) {
+        gCtx.fillStyle = '#000';
+        gCtx.fillRect(x - sz - 1, y - sz - 1, sz * 2 + 3, sz * 2 + 3);
+      }
+    });
+  }
+  const expansion = 1 + s * 0.8;
+  gData.stars.forEach(star => {
+    const r = star.z * expansion;
+    const x = cx + star.dx * r;
+    const y = cy + star.dy * r;
+    const sz = Math.max(1, Math.floor(r / 30));
+    if (x > 0 && x < 240 && y > 25 && y < 240) {
+      const bright = Math.min(255, Math.floor(r * 3));
+      gCtx.fillStyle = `rgb(${bright}, ${bright}, ${bright})`;
+      gCtx.fillRect(x - sz, y - sz, sz * 2 + 1, sz * 2 + 1);
+    }
+  });
+}
+
+// 15. Matrix Rain
+function drawMatrixRain(s) {
+  if (s === 'init') {
+    gData.cols = [];
+    for (let i = 0; i < 15; i++) {
+      gData.cols.push({
+        y: -(Math.random() * 10) * 14,
+        speed: (1 + Math.floor(Math.random() * 3)) * 2,
+        len: 5 + Math.floor(Math.random() * 8)
+      });
+    }
+    return;
+  }
+  gCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+  gCtx.fillRect(0, 25, 240, 215);
+
+  gCtx.font = 'bold 14px Courier New';
+  gData.cols.forEach((col, i) => {
+    col.y += col.speed;
+    const x = i * 16 + 2;
+    for (let j = 0; j < col.len; j++) {
+      const y = col.y - j * 14;
+      if (y < 26 || y > 235) continue;
+      const c = String.fromCharCode(33 + ((s * 7 + i * 13 + j * 3) % 94));
+      if (j === 0) { gCtx.fillStyle = '#fff'; }
+      else { const g = 200 - j * Math.floor(150 / col.len); gCtx.fillStyle = `rgb(0, ${g}, 0)`; }
+      gCtx.fillText(c, x, y);
+    }
+    if (col.y - col.len * 14 > 240) {
+      col.y = 26 - Math.floor(Math.random() * 5) * 14;
+      col.speed = (1 + Math.floor(Math.random() * 3)) * 2;
+      col.len = 5 + Math.floor(Math.random() * 8);
+    }
+  });
+}
+
+// ========== Start ==========
+startGallery();
 </script>
 
 </body>
