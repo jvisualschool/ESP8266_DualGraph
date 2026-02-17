@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESP8266 Graph Gallery - Preview</title>
+<title>ESP8266 Graph Gallery v3.0 Turbo - Preview</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,16 +19,17 @@
   }
 
   h1 {
-    font-size: 1.4rem;
-    color: #888;
+    font-size: 1.6rem;
+    color: #00ffff;
     margin-bottom: 8px;
-    font-weight: 400;
+    font-weight: bold;
     letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0,255,255,0.5);
   }
 
   .subtitle {
     color: #555;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     margin-bottom: 30px;
   }
 
@@ -58,11 +59,11 @@
     width: 280px;
     height: 280px;
     background: #000;
-    border: 3px solid #222;
+    border: 3px solid #333;
     border-radius: 8px;
     padding: 20px;
     position: relative;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+    box-shadow: 0 0 40px rgba(0,0,0,1), inset 0 0 20px rgba(0,0,0,0.5);
   }
 
   .tft-screen {
@@ -74,21 +75,15 @@
     image-rendering: pixelated;
   }
 
-  .tft-screen canvas {
-    width: 240px;
-    height: 240px;
-    image-rendering: pixelated;
-  }
-
   /* OLED 128x64 */
   .oled-frame {
     width: 200px;
     height: 120px;
-    background: #000;
-    border: 3px solid #1a1a1a;
+    background: #111;
+    border: 3px solid #222;
     border-radius: 6px;
     padding: 12px 36px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
   }
 
   .oled-screen {
@@ -97,6 +92,7 @@
     background: #000;
     position: relative;
     overflow: hidden;
+    border: 1px solid #1a1a1a;
   }
 
   .oled-screen .oled-divider {
@@ -104,22 +100,9 @@
     margin: 2px 0;
   }
 
-  /* Graph gallery OLED */
-  .oled-graph-num {
-    font-size: 8px;
-    color: #cde6ff;
-  }
-  .oled-graph-name {
-    font-size: 14px;
-    color: #cde6ff;
-    font-weight: bold;
-    margin: 2px 0;
-  }
-  .oled-graph-desc {
-    font-size: 8px;
-    color: #cde6ff;
-    line-height: 1.5;
-  }
+  .oled-graph-num { font-size: 8px; color: #cde6ff; }
+  .oled-graph-name { font-size: 14px; color: #cde6ff; font-weight: bold; margin: 2px 0; }
+  .oled-graph-desc { font-size: 8px; color: #cde6ff; line-height: 1.5; }
 
   /* ===== Timer ===== */
   .timer-bar {
@@ -131,24 +114,17 @@
 
   .timer-track {
     width: 100%;
-    height: 4px;
+    height: 6px;
     background: #1a1a1a;
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
     margin-top: 8px;
   }
 
   .timer-fill {
     height: 100%;
-    background: linear-gradient(90deg, #00ffff, #07e0);
+    background: linear-gradient(90deg, #ff00ff, #00ffff);
     transition: width 0.1s linear;
-    border-radius: 2px;
-  }
-
-  .timer-text {
-    color: #555;
-    font-size: 0.75rem;
-    margin-top: 6px;
   }
 
   /* ===== Graph nav ===== */
@@ -158,36 +134,31 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 600px;
+    max-width: 800px;
   }
 
   .graph-nav-btn {
-    padding: 4px 10px;
+    padding: 6px 12px;
     background: #111;
     border: 1px solid #333;
     border-radius: 4px;
     color: #666;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     transition: all 0.2s;
   }
 
   .graph-nav-btn.active {
-    background: #0a2a20;
-    border-color: #07e0;
+    background: #004444;
+    border-color: #00ffff;
     color: #fff;
-  }
-
-  .graph-nav-btn:hover {
-    border-color: #555;
-    color: #aaa;
+    box-shadow: 0 0 10px rgba(0,255,255,0.2);
   }
 
   .hardware-info {
     margin-top: 40px;
     display: flex;
-    gap: 30px;
+    gap: 20px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -197,39 +168,25 @@
     border: 1px solid #222;
     border-radius: 8px;
     padding: 16px 20px;
-    min-width: 200px;
+    min-width: 220px;
   }
 
-  .hw-card h3 {
-    color: #666;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-
-  .hw-card .hw-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 2px 0;
-    font-size: 0.8rem;
-  }
-
-  .hw-card .hw-row .hw-label { color: #777; }
-  .hw-card .hw-row .hw-value { color: #aaa; }
+  .hw-card h3 { color: #888; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 12px; }
+  .hw-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.85rem; }
+  .hw-label { color: #555; }
+  .hw-value { color: #aaa; }
 </style>
 </head>
 <body>
 
-<h1>ESP8266 GRAPH GALLERY</h1>
-<p class="subtitle">NodeMCU v2 + SSD1306 OLED + ST7789 TFT</p>
+<h1>ESP8266 DUALGRAPH v3.0 TURBO</h1>
+<p class="subtitle">ST7789 TFT + SSD1306 OLED Visualization</p>
 
 <div class="graph-nav" id="graph-nav"></div>
 
 <div class="displays">
-
-  <!-- TFT Canvas -->
   <div class="display-group">
-    <div class="display-label">ST7789 TFT 240x240</div>
+    <div class="display-label">TFT 240x240 (Direct GPIO)</div>
     <div class="tft-frame">
       <div class="tft-screen">
         <canvas id="tft-canvas" width="240" height="240"></canvas>
@@ -237,733 +194,287 @@
     </div>
   </div>
 
-  <!-- OLED Info -->
   <div class="display-group">
-    <div class="display-label">SSD1306 OLED 128x64</div>
+    <div class="display-label">OLED 128x64 (I2C)</div>
     <div class="oled-frame">
-      <div class="oled-screen" id="oled-gallery">
-        <div class="oled-graph-num" id="oled-gnum">1 / 15</div>
-        <div class="oled-graph-name" id="oled-gname">Sine Wave</div>
-        <div class="oled-divider"></div>
-        <div class="oled-graph-desc" id="oled-gdesc1">Periodic function</div>
-        <div class="oled-graph-desc" id="oled-gdesc2">y = sin(x)</div>
+      <div class="oled-screen">
+        <div id="oled-content" style="padding: 4px;">
+          <div class="oled-graph-num" id="oled-gnum">1 / 16</div>
+          <div class="oled-graph-name" id="oled-gname">Sine Wave</div>
+          <div class="oled-divider"></div>
+          <div class="oled-graph-desc" id="oled-gdesc1">Periodic function</div>
+          <div class="oled-graph-desc" id="oled-gdesc2">y = sin(x)</div>
+        </div>
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- Timer -->
 <div class="timer-bar">
-  <div class="timer-track">
-    <div class="timer-fill" id="gallery-timer-fill" style="width:0%"></div>
-  </div>
-  <div class="timer-text" id="gallery-timer-text">Graph 1/15</div>
+  <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:0%"></div></div>
+  <div id="timer-text" style="color:#555; font-size:0.8rem; margin-top:8px;">Initializing...</div>
 </div>
 
-<!-- Hardware Info -->
 <div class="hardware-info">
   <div class="hw-card">
-    <h3>MCU</h3>
-    <div class="hw-row"><span class="hw-label">Chip</span><span class="hw-value">ESP8266EX</span></div>
-    <div class="hw-row"><span class="hw-label">Board</span><span class="hw-value">NodeMCU v2</span></div>
-    <div class="hw-row"><span class="hw-label">CPU</span><span class="hw-value">80MHz</span></div>
-    <div class="hw-row"><span class="hw-label">RAM</span><span class="hw-value">80KB</span></div>
-    <div class="hw-row"><span class="hw-label">Flash</span><span class="hw-value">4MB</span></div>
+    <h3>System</h3>
+    <div class="hw-row"><span class="hw-label">CPU Clock</span><span class="hw-value" style="color:#00ff00;">160 MHz</span></div>
+    <div class="hw-row"><span class="hw-label">Rendering</span><span class="hw-value">Direct GPIO Blast</span></div>
+    <div class="hw-row"><span class="hw-label">MCU</span><span class="hw-value">ESP8266EX</span></div>
   </div>
   <div class="hw-card">
-    <h3>DISPLAYS</h3>
-    <div class="hw-row"><span class="hw-label">TFT</span><span class="hw-value">ST7789 240x240</span></div>
-    <div class="hw-row"><span class="hw-label">TFT SPI</span><span class="hw-value">SW (D1,D2,D3,D4,D8)</span></div>
-    <div class="hw-row"><span class="hw-label">OLED</span><span class="hw-value">SSD1306 128x64</span></div>
-    <div class="hw-row"><span class="hw-label">OLED I2C</span><span class="hw-value">D5,D6 (0x3C)</span></div>
-  </div>
-  <div class="hw-card">
-    <h3>GRAPH GALLERY</h3>
-    <div class="hw-row"><span class="hw-label">Graphs</span><span class="hw-value">15 types</span></div>
-    <div class="hw-row"><span class="hw-label">WiFi</span><span class="hw-value">Not required</span></div>
-    <div class="hw-row"><span class="hw-label">Drawing</span><span class="hw-value">Incremental</span></div>
-    <div class="hw-row"><span class="hw-label">Power</span><span class="hw-value">USB-C (5V)</span></div>
+    <h3>Design</h3>
+    <div class="hw-row"><span class="hw-label">TFT Size</span><span class="hw-value">240x240 px</span></div>
+    <div class="hw-row"><span class="hw-label">Graphs</span><span class="hw-value">16 Unique Styles</span></div>
+    <div class="hw-row"><span class="hw-label">Theme</span><span class="hw-value">Cyberpunk Dots/Lines</span></div>
   </div>
 </div>
 
 <script>
-// ========== Graph Gallery ==========
 const graphDefs = [
-  { name: 'Sine Wave',    d1: 'Periodic function', d2: 'y = sin(x)',       maxSteps: 210, draw: drawSineWave },
-  { name: 'Bar Chart',    d1: 'Category compare',  d2: '5 data bars',      maxSteps: 65,  draw: drawBarChart },
-  { name: 'Pie Chart',    d1: 'Proportions',       d2: 'Arc segments',     maxSteps: 40,  draw: drawPieChart },
-  { name: 'Line Graph',   d1: 'Trend analysis',    d2: 'Multi-series',     maxSteps: 200, draw: drawLineGraph },
-  { name: 'Scatter Plot', d1: 'Correlation',        d2: 'Random points',   maxSteps: 55,  draw: drawScatterPlot },
-  { name: 'Radar Chart',  d1: 'Multi-axis',        d2: 'Pentagon shape',   maxSteps: 40,  draw: drawRadarChart },
-  { name: 'Area Chart',   d1: 'Cumulative',        d2: 'Filled curve',     maxSteps: 130, draw: drawAreaChart },
-  { name: 'Gauge',        d1: 'Single value',      d2: 'Needle + arc',     maxSteps: 60,  draw: drawGaugeMeter },
-  { name: 'Histogram',    d1: 'Distribution',      d2: 'Frequency bins',   maxSteps: 65,  draw: drawHistogram },
-  { name: 'Spiral',       d1: 'Archimedes',        d2: 'r = a + b*theta',  maxSteps: 130, draw: drawSpiral },
-  { name: 'Lissajous',    d1: 'Frequency ratio',   d2: 'Parametric XY',    maxSteps: 200, draw: drawLissajous },
-  { name: 'Rose Curve',   d1: 'Polar coords',      d2: 'r = cos(7*theta)', maxSteps: 200, draw: drawRoseCurve },
-  { name: 'Heart Curve',  d1: 'Parametric',        d2: 'Love equation',    maxSteps: 130, draw: drawHeartCurve },
-  { name: 'Starfield',    d1: '3D perspective',    d2: 'Radial expansion', maxSteps: 80,  draw: drawStarfield },
-  { name: 'Matrix Rain',  d1: 'Digital rain',      d2: 'Falling chars',    maxSteps: 100, draw: drawMatrixRain },
+  { name: 'Sine Wave',    d1: 'Periodic function', d2: 'y = sin(x)',       steps: 150, draw: drawSineWave },
+  { name: 'Bar Chart',    d1: 'Category compare',  d2: 'Bottom-up Growth', steps: 65,  draw: drawBarChart },
+  { name: 'Pie Chart',    d1: 'Proportions',       d2: 'Arc segments',     steps: 40,  draw: drawPieChart },
+  { name: 'Line Graph',   ... { d1: 'Trend analysis', d2: 'CPU/MEM/NET Stats', steps: 150, draw: drawLineGraph } },
+  { name: 'Scatter Plot', d1: 'Correlation',        d2: 'Random Points',   steps: 55,  draw: drawScatterPlot },
+  { name: 'Radar Chart',  ... { d1: 'Multi-axis', d2: 'Animated Polygon',  steps: 40,  draw: drawRadarChart } },
+  { name: 'Area Chart',   d1: 'Cumulative',        d2: 'Premium Magenta',  steps: 105, draw: drawAreaChart },
+  { name: 'Gauge',        d1: 'Single value',      d2: 'Needle + arc',     steps: 60,  draw: drawGauge },
+  { name: 'Histogram',    d1: 'Distribution',      d2: 'Frequency bins',   steps: 65,  draw: drawHistogram },
+  { name: 'Spiral',       d1: 'Archimedes',        d2: 'Geometric Motion', steps: 130, draw: drawSpiral },
+  { name: 'Lissajous',    d1: 'Frequency ratio',   d2: 'Parametric XY',    steps: 150, draw: drawLissajous },
+  { name: 'Rose Curve',   d1: 'Polar coords',      d2: 'r = cos(7*theta)', steps: 150, draw: drawRoseCurve },
+  { name: 'Heart Curve',  d1: 'Parametric',        d2: 'Love equation',    steps: 130, draw: drawHeartCurve },
+  { name: 'Vortex Dots',  d1: 'Particle swarm',    d2: 'Spiral vortex',    steps: 150, draw: drawVortexDots },
+  { name: 'Moire Lines',  d1: 'Interference',      d2: 'Radial patterns',  steps: 100, draw: drawMoireLines },
+  { name: 'System Info',  d1: 'Hardware specs',    d2: 'ESP8266 Stats',    steps: 1,   draw: drawSystemInfo, hold: 7000 }
 ];
 
-let gCanvas, gCtx;
-let gCurrent = 0;
-let gStep = 0;
-let gAnimId = null;
-let gHoldTimeout = null;
-let gData = {};
+// Re-adjust Line Graph entry structure
+graphDefs[3] = { name: 'Line Graph', d1: 'Trend analysis', d2: 'CPU/MEM/NET Stats', steps: 150, draw: drawLineGraph };
+graphDefs[5] = { name: 'Radar Chart', d1: 'Multi-axis', d2: 'Animated Polygon', steps: 40, draw: drawRadarChart };
 
-function startGallery() {
-  gCanvas = document.getElementById('tft-canvas');
-  gCtx = gCanvas.getContext('2d');
+let canvas = document.getElementById('tft-canvas');
+let ctx = canvas.getContext('2d');
+let currentGraphIdx = 0;
+let currentStep = 0;
+let data = {};
 
-  // Build nav buttons
+function init() {
   const nav = document.getElementById('graph-nav');
-  nav.innerHTML = '';
   graphDefs.forEach((g, i) => {
-    const btn = document.createElement('div');
+    const btn = document.createElement('button');
     btn.className = 'graph-nav-btn' + (i === 0 ? ' active' : '');
     btn.textContent = (i + 1) + '. ' + g.name;
-    btn.onclick = () => jumpToGraph(i);
-    btn.id = 'gnav-' + i;
+    btn.onclick = () => { currentGraphIdx = i; resetGraph(); };
     nav.appendChild(btn);
   });
-
-  gCurrent = 0;
-  initGraph(gCurrent);
-  runGalleryLoop();
+  resetGraph();
 }
 
-function jumpToGraph(idx) {
-  if (gAnimId) cancelAnimationFrame(gAnimId);
-  if (gHoldTimeout) clearTimeout(gHoldTimeout);
-  gCurrent = idx;
-  initGraph(idx);
-  runGalleryLoop();
+function resetGraph() {
+  currentStep = 0;
+  data = {};
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, 240, 240);
+  
+  // Header
+  ctx.fillStyle = '#222';
+  ctx.fillRect(0, 0, 240, 24);
+  ctx.fillStyle = '#00ffff';
+  ctx.font = 'bold 14px Courier New';
+  ctx.fillText(graphDefs[currentGraphIdx].name, 10, 18);
+
+  const navBtns = document.querySelectorAll('.graph-nav-btn');
+  navBtns.forEach((btn, i) => btn.className = 'graph-nav-btn' + (i === currentGraphIdx ? ' active' : ''));
+
+  document.getElementById('oled-gnum').textContent = (currentGraphIdx + 1) + ' / ' + graphDefs.length;
+  document.getElementById('oled-gname').textContent = graphDefs[currentGraphIdx].name;
+  document.getElementById('oled-gdesc1').textContent = graphDefs[currentGraphIdx].d1;
+  document.getElementById('oled-gdesc2').textContent = graphDefs[currentGraphIdx].d2;
+  
+  graphDefs[currentGraphIdx].draw('init');
+  requestAnimationFrame(loop);
 }
 
-function initGraph(idx) {
-  gStep = 0;
-  gData = {};
-  gCtx.fillStyle = '#000';
-  gCtx.fillRect(0, 0, 240, 240);
+function loop() {
+  const g = graphDefs[currentGraphIdx];
+  if (currentStep < g.steps) {
+    g.draw(currentStep);
+    currentStep++;
+    
+    // Maintain Title Bar
+    ctx.fillStyle = '#222'; ctx.fillRect(0, 0, 240, 24);
+    ctx.fillStyle = '#00ffff'; ctx.font = 'bold 14px Courier New';
+    ctx.fillText(g.name, 10, 18);
 
-  // Title bar
-  gCtx.fillStyle = '#222';
-  gCtx.fillRect(0, 0, 240, 24);
-  gCtx.fillStyle = '#00ffff';
-  gCtx.font = 'bold 14px Courier New';
-  gCtx.fillText(graphDefs[idx].name, 8, 17);
-
-  // OLED
-  document.getElementById('oled-gnum').textContent = (idx + 1) + ' / ' + graphDefs.length;
-  document.getElementById('oled-gname').textContent = graphDefs[idx].name;
-  document.getElementById('oled-gdesc1').textContent = graphDefs[idx].d1;
-  document.getElementById('oled-gdesc2').textContent = graphDefs[idx].d2;
-
-  // Nav buttons
-  document.querySelectorAll('.graph-nav-btn').forEach((b, i) => {
-    b.className = 'graph-nav-btn' + (i === idx ? ' active' : '');
-  });
-
-  // Init graph-specific data
-  graphDefs[idx].draw('init');
-}
-
-function runGalleryLoop() {
-  const def = graphDefs[gCurrent];
-
-  if (gStep < def.maxSteps) {
-    def.draw(gStep);
-    // Redraw title bar on top so graphs don't overwrite it
-    gCtx.fillStyle = '#222';
-    gCtx.fillRect(0, 0, 240, 24);
-    gCtx.fillStyle = '#00ffff';
-    gCtx.font = 'bold 14px Courier New';
-    gCtx.textAlign = 'start';
-    gCtx.textBaseline = 'alphabetic';
-    gCtx.fillText(graphDefs[gCurrent].name, 8, 17);
-    gStep++;
-
-    const pct = (gStep / def.maxSteps * 100).toFixed(0);
-    document.getElementById('gallery-timer-fill').style.width = pct + '%';
-    document.getElementById('gallery-timer-text').textContent =
-      'Graph ' + (gCurrent + 1) + '/' + graphDefs.length + ' - ' + graphDefs[gCurrent].name;
-
-    gAnimId = requestAnimationFrame(runGalleryLoop);
+    document.getElementById('timer-fill').style.width = (currentStep / g.steps * 100) + '%';
+    document.getElementById('timer-text').textContent = `Rendering ${g.name}...`;
+    requestAnimationFrame(loop);
   } else {
-    document.getElementById('gallery-timer-fill').style.width = '100%';
-    gHoldTimeout = setTimeout(() => {
-      gCurrent = (gCurrent + 1) % graphDefs.length;
-      initGraph(gCurrent);
-      runGalleryLoop();
-    }, 0);
+    document.getElementById('timer-fill').style.width = '100%';
+    document.getElementById('timer-text').textContent = `Holding for ${g.hold ? g.hold/1000 : 2}s...`;
+    setTimeout(() => {
+      currentGraphIdx = (currentGraphIdx + 1) % graphDefs.length;
+      resetGraph();
+    }, g.hold || 2000);
   }
 }
 
-// ========== Graph Drawing Functions ==========
-
-function drawAxesHelper(x0, y0, w, h) {
-  gCtx.strokeStyle = '#333';
-  gCtx.lineWidth = 1;
-  gCtx.beginPath();
-  gCtx.moveTo(x0, y0 - h);
-  gCtx.lineTo(x0, y0);
-  gCtx.lineTo(x0 + w, y0);
-  gCtx.stroke();
+// Drawing Helpers
+function drawAxes(x, y, w, h) {
+  ctx.strokeStyle = '#444'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x, y - h); ctx.lineTo(x, y); ctx.lineTo(x + w, y); ctx.stroke();
 }
 
-// 1. Sine Wave
 function drawSineWave(s) {
-  if (s === 'init') {
-    drawAxesHelper(15, 180, 210, 130);
-    gCtx.fillStyle = '#888';
-    gCtx.font = '10px Courier New';
-    gCtx.fillText('1', 2, 52);
-    gCtx.fillText('0', 2, 115);
-    gCtx.fillText('-1', 0, 178);
-    return;
-  }
-  if (s >= 210) return;
-  const x = s * (4 * Math.PI) / 210;
-  const px = 16 + s;
-  const py = 115 - Math.sin(x) * 60;
-  if (s > 0) {
-    const xp = (s - 1) * (4 * Math.PI) / 210;
-    const ppx = 16 + (s - 1);
-    const ppy = 115 - Math.sin(xp) * 60;
-    gCtx.strokeStyle = '#00ff00';
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.moveTo(ppx, ppy);
-    gCtx.lineTo(px, py);
-    gCtx.stroke();
-  }
-  gCtx.fillStyle = '#ffff00';
-  gCtx.beginPath();
-  gCtx.arc(px, py, 3, 0, Math.PI * 2);
-  gCtx.fill();
-  if (s > 1) {
-    const xpp = (s - 1) * (4 * Math.PI) / 210;
-    const ppx2 = 16 + (s - 1);
-    const ppy2 = 115 - Math.sin(xpp) * 60;
-    gCtx.fillStyle = '#00ff00';
-    gCtx.beginPath();
-    gCtx.arc(ppx2, ppy2, 3, 0, Math.PI * 2);
-    gCtx.fill();
-  }
+  if (s==='init') { drawAxes(15, 180, 210, 130); return; }
+  let x = s * (4 * Math.PI) / 150;
+  let py = 115 - Math.sin(x) * 60;
+  ctx.fillStyle = '#0f0'; ctx.beginPath(); ctx.arc(16 + s * 1.4, py, 2, 0, 6.28); ctx.fill();
 }
 
-// 2. Bar Chart
 function drawBarChart(s) {
-  if (s === 'init') {
-    gData.bars = [75, 45, 90, 60, 85];
-    gData.colors = ['#ff0000', '#00ff00', '#4444ff', '#ff8800', '#8800ff'];
-    drawAxesHelper(25, 220, 200, 180);
-    gCtx.fillStyle = '#888';
-    gCtx.font = '10px Courier New';
-    ['A','B','C','D','E'].forEach((l, i) => gCtx.fillText(l, 45 + i * 38, 234));
-    return;
-  }
-  const bars = gData.bars;
-  const colors = gData.colors;
+  const vals = [75, 45, 90, 60, 85];
+  const colors = ['#f00', '#0f0', '#00f', '#f80', '#80f'];
+  if (s==='init') { drawAxes(25, 220, 200, 180); return; }
   for (let i = 0; i < 5; i++) {
-    const maxH = bars[i] * 1.7;
-    const curH = maxH * Math.min(s / 65, 1);
-    const barX = 30 + i * 38;
-    const barY = 220 - curH;
-    gCtx.fillStyle = colors[i];
-    gCtx.fillRect(barX, barY, 30, curH);
+    let h = (vals[i] * 1.7) * (s / 65);
+    ctx.fillStyle = colors[i];
+    ctx.fillRect(30 + i * 38, 220 - h, 30, 2);
   }
 }
 
-// 3. Pie Chart
 function drawPieChart(s) {
-  if (s === 'init') {
-    gData.slices = [30, 25, 20, 15, 10];
-    gData.colors = ['#ff0000', '#ff8800', '#00ff00', '#00ffff', '#8800ff'];
-    gCtx.strokeStyle = '#333';
-    gCtx.beginPath();
-    gCtx.arc(120, 135, 81, 0, Math.PI * 2);
-    gCtx.stroke();
-    return;
-  }
-  const totalAngle = (s / 40) * Math.PI * 2;
-  let angle = -Math.PI / 2;
+  const slices = [30, 25, 20, 15, 10];
+  const colors = ['#f00', '#f80', '#0f0', '#0ff', '#80f'];
+  if (s==='init') return;
+  let total = (s / 40) * 360;
+  let acc = -90;
   for (let i = 0; i < 5; i++) {
-    const sweep = (gData.slices[i] / 100) * Math.PI * 2;
-    const drawSweep = Math.min(sweep, Math.max(0, totalAngle - (angle + Math.PI / 2)));
-    if (drawSweep <= 0) { angle += sweep; continue; }
-    gCtx.fillStyle = gData.colors[i];
-    gCtx.beginPath();
-    gCtx.moveTo(120, 135);
-    gCtx.arc(120, 135, 80, angle, angle + drawSweep);
-    gCtx.closePath();
-    gCtx.fill();
-    angle += sweep;
-  }
-
-  // Draw labels at last step
-  if (s === 39) {
-    const labels = ['A', 'B', 'C', 'D', 'E'];
-    let acc = 0;
-    gCtx.font = 'bold 14px Courier New';
-    gCtx.fillStyle = '#fff';
-    gCtx.textAlign = 'center';
-    gCtx.textBaseline = 'middle';
-    for (let i = 0; i < 5; i++) {
-      const sweep2 = (gData.slices[i] / 100) * Math.PI * 2;
-      const midA = -Math.PI / 2 + acc + sweep2 / 2;
-      const lx = 120 + 50 * Math.cos(midA);
-      const ly = 135 + 50 * Math.sin(midA);
-      gCtx.fillText(labels[i], lx, ly);
-      acc += sweep2;
+    let sweep = (slices[i] / 100) * 360;
+    let end = Math.min(acc + sweep, -90 + total);
+    if (end > acc) {
+      ctx.fillStyle = colors[i]; ctx.beginPath(); ctx.moveTo(120, 135);
+      ctx.arc(120, 135, 80, acc * Math.PI/180, end * Math.PI/180);
+      ctx.fill();
     }
-    gCtx.textAlign = 'start';
-    gCtx.textBaseline = 'alphabetic';
+    acc += sweep;
   }
 }
 
-// 4. Line Graph
 function drawLineGraph(s) {
-  if (s === 'init') {
-    gData.lines = [];
-    const colors = ['#ff0000', '#00ff00', '#00ffff'];
-    for (let j = 0; j < 3; j++) {
-      let val = 50 + Math.random() * 30;
-      const pts = [];
-      for (let i = 0; i < 50; i++) {
-        val += (Math.random() * 10 - 5) * 0.5;
-        val = Math.max(10, Math.min(100, val));
-        pts.push(val);
-      }
-      gData.lines.push({ pts, color: colors[j] });
-    }
-    drawAxesHelper(25, 220, 200, 180);
-    gCtx.font = '10px Courier New';
-    gCtx.fillStyle = '#ff0000'; gCtx.fillText('S1', 180, 37);
-    gCtx.fillStyle = '#00ff00'; gCtx.fillText('S2', 200, 37);
-    gCtx.fillStyle = '#00ffff'; gCtx.fillText('S3', 220, 37);
-    return;
+  if (s==='init') { 
+    drawAxes(25, 220, 200, 180); 
+    ctx.font = '10px Courier'; ctx.fillStyle = '#f00'; ctx.fillText('CPU', 170, 35);
+    ctx.fillStyle = '#0f0'; ctx.fillText('MEM', 195, 35);
+    ctx.fillStyle = '#0ff'; ctx.fillText('NET', 220, 35);
+    return; 
   }
-  const idx = Math.floor(s / 4);
-  if (idx < 1 || idx >= 50) return;
-  gData.lines.forEach(line => {
-    const x1 = 26 + (idx - 1) * 4;
-    const y1 = 220 - line.pts[idx - 1] * 1.7;
-    const x2 = 26 + idx * 4;
-    const y2 = 220 - line.pts[idx] * 1.7;
-    gCtx.strokeStyle = line.color;
-    gCtx.lineWidth = 1.5;
-    gCtx.beginPath();
-    gCtx.moveTo(x1, y1);
-    gCtx.lineTo(x2, y2);
-    gCtx.stroke();
-  });
+  let x = 26 + (s/150)*200;
+  ctx.fillStyle = '#f00'; ctx.fillRect(x, 150 + Math.sin(s/10)*20, 2, 2);
+  ctx.fillStyle = '#0f0'; ctx.fillRect(x, 100 + Math.cos(s/15)*30, 2, 2);
+  ctx.fillStyle = '#0ff'; ctx.fillRect(x, 180 - Math.sin(s/20)*15, 2, 2);
 }
 
-// 5. Scatter Plot
 function drawScatterPlot(s) {
-  if (s === 'init') {
-    gData.pts = [];
-    for (let i = 0; i < 80; i++) {
-      const bx = Math.random() * 200;
-      gData.pts.push({ x: bx, y: bx * 0.7 + (Math.random() * 80 - 40) });
-    }
-    drawAxesHelper(25, 220, 200, 180);
-    return;
-  }
-  if (s >= 80) return;
-  const p = gData.pts[s];
-  const px = 26 + p.x;
-  const py = 220 - Math.max(0, Math.min(170, p.y));
-  gCtx.fillStyle = '#00ffff';
-  gCtx.beginPath();
-  gCtx.arc(px, py, 3, 0, Math.PI * 2);
-  gCtx.fill();
-  gCtx.strokeStyle = '#fff';
-  gCtx.lineWidth = 1;
-  gCtx.beginPath();
-  gCtx.arc(px, py, 3, 0, Math.PI * 2);
-  gCtx.stroke();
+  if (s==='init') { drawAxes(25, 220, 200, 180); return; }
+  ctx.fillStyle = '#0ff'; ctx.beginPath(); 
+  ctx.arc(30 + Math.random()*180, 50 + Math.random()*150, 3, 0, 6.28); ctx.fill();
 }
 
-// 6. Radar Chart
 function drawRadarChart(s) {
-  const cx = 120, cy = 140, maxR = 80;
-  if (s === 'init') {
-    gData.values = [0.9, 0.6, 0.8, 0.5, 0.7];
-    const labels = ['STR', 'DEX', 'INT', 'WIS', 'CHA'];
-    for (let ring = 1; ring <= 4; ring++) {
-      const r = maxR * ring / 4;
-      gCtx.strokeStyle = '#333';
-      gCtx.beginPath();
-      for (let i = 0; i <= 5; i++) {
-        const a = (i % 5) * (Math.PI * 2 / 5) - Math.PI / 2;
-        const method = i === 0 ? 'moveTo' : 'lineTo';
-        gCtx[method](cx + r * Math.cos(a), cy + r * Math.sin(a));
-      }
-      gCtx.stroke();
-    }
-    gCtx.fillStyle = '#888';
-    gCtx.font = '10px Courier New';
-    for (let i = 0; i < 5; i++) {
-      const a = i * (Math.PI * 2 / 5) - Math.PI / 2;
-      gCtx.strokeStyle = '#333';
-      gCtx.beginPath();
-      gCtx.moveTo(cx, cy);
-      gCtx.lineTo(cx + maxR * Math.cos(a), cy + maxR * Math.sin(a));
-      gCtx.stroke();
-      gCtx.fillText(labels[i], cx + (maxR + 10) * Math.cos(a) - 10, cy + (maxR + 10) * Math.sin(a) + 4);
-    }
-    return;
+  if (s==='init') { drawAxes(120, 140, 80, 80); return; }
+  let scale = s / 40;
+  ctx.strokeStyle = '#0f0'; ctx.beginPath();
+  for(let i=0; i<6; i++) {
+    let a = (i*72 - 90) * Math.PI/180;
+    let r = 70 * scale;
+    ctx.lineTo(120 + r*Math.cos(a), 140 + r*Math.sin(a));
   }
-  const scale = Math.min(s / 27, 1);
-  gCtx.strokeStyle = '#00ff00';
-  gCtx.lineWidth = 2;
-  gCtx.beginPath();
-  for (let i = 0; i <= 5; i++) {
-    const idx2 = i % 5;
-    const a = idx2 * (Math.PI * 2 / 5) - Math.PI / 2;
-    const r = maxR * gData.values[idx2] * scale;
-    const method = i === 0 ? 'moveTo' : 'lineTo';
-    gCtx[method](cx + r * Math.cos(a), cy + r * Math.sin(a));
-  }
-  gCtx.stroke();
-  if (s >= 27) {
-    for (let i = 0; i < 5; i++) {
-      const a = i * (Math.PI * 2 / 5) - Math.PI / 2;
-      const r = maxR * gData.values[i];
-      gCtx.fillStyle = '#ffff00';
-      gCtx.beginPath();
-      gCtx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), 4, 0, Math.PI * 2);
-      gCtx.fill();
-    }
-  }
+  ctx.stroke();
 }
 
-// 7. Area Chart
 function drawAreaChart(s) {
-  if (s === 'init') {
-    gData.pts = [];
-    let val = 40;
-    for (let i = 0; i < 50; i++) {
-      val += (Math.random() * 10 - 4.5) * 0.8;
-      val = Math.max(10, Math.min(100, val));
-      gData.pts.push(val);
-    }
-    drawAxesHelper(20, 225, 210, 190);
-    return;
-  }
-  const idx = Math.floor(s / 4);
-  if (idx >= 50) return;
-  const x = 21 + idx * 4;
-  const yTop = 225 - gData.pts[idx] * 1.8;
-  gCtx.fillStyle = 'rgba(0, 80, 0, 0.6)';
-  gCtx.fillRect(x, yTop, 4, 225 - yTop);
-  if (idx > 0) {
-    const px = 21 + (idx - 1) * 4;
-    const py = 225 - gData.pts[idx - 1] * 1.8;
-    gCtx.strokeStyle = '#00ff00';
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.moveTo(px, py);
-    gCtx.lineTo(x, yTop);
-    gCtx.stroke();
-  }
-  gCtx.fillStyle = '#ffff00';
-  gCtx.beginPath();
-  gCtx.arc(x, yTop, 2, 0, Math.PI * 2);
-  gCtx.fill();
+  if (s==='init') { drawAxes(20, 225, 210, 185); return; }
+  let x = 21 + s * 2;
+  let h = 50 + Math.sin(s/5)*40;
+  ctx.fillStyle = '#4008'; ctx.fillRect(x, 225-h, 2, h);
+  ctx.fillStyle = '#f0f'; ctx.fillRect(x, 225-h, 2, 2);
 }
 
-// 8. Gauge Meter
-function drawGaugeMeter(s) {
-  const cx = 120, cy = 155, r = 90;
-  if (s === 'init') {
-    gCtx.strokeStyle = '#333';
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
-    gCtx.stroke();
-    gCtx.fillStyle = '#888';
-    gCtx.font = '10px Courier New';
-    for (let i = 0; i <= 10; i++) {
-      const a = Math.PI + i * Math.PI / 10;
-      gCtx.strokeStyle = '#888';
-      gCtx.lineWidth = 1;
-      gCtx.beginPath();
-      gCtx.moveTo(cx + (r - 5) * Math.cos(a), cy + (r - 5) * Math.sin(a));
-      gCtx.lineTo(cx + (r + 5) * Math.cos(a), cy + (r + 5) * Math.sin(a));
-      gCtx.stroke();
-    }
-    gCtx.fillText('0', 20, cy + 15);
-    gCtx.fillText('100', 205, cy + 15);
-    return;
-  }
-  const targetVal = 72;
-  const val = targetVal * Math.min(s / 40, 1);
-  const angle = Math.PI + (val / 100) * Math.PI;
-
-  gCtx.lineWidth = 8;
-  const steps2 = 100;
-  for (let i = 0; i < steps2; i++) {
-    const a = Math.PI + (i / steps2) * (val / 100) * Math.PI;
-    const ratio = (a - Math.PI) / Math.PI;
-    if (ratio < 0.5) gCtx.strokeStyle = '#00ff00';
-    else if (ratio < 0.8) gCtx.strokeStyle = '#ffff00';
-    else gCtx.strokeStyle = '#ff0000';
-    const nextA = Math.PI + ((i + 1) / steps2) * (val / 100) * Math.PI;
-    gCtx.beginPath();
-    gCtx.arc(cx, cy, 80, a, nextA + 0.02);
-    gCtx.stroke();
-  }
-
-  gCtx.strokeStyle = '#000';
-  gCtx.lineWidth = 4;
-  gCtx.beginPath();
-  gCtx.moveTo(cx, cy);
-  if (s > 0) {
-    const prevVal = targetVal * Math.min((s - 1) / 40, 1);
-    const prevA = Math.PI + (prevVal / 100) * Math.PI;
-    gCtx.lineTo(cx + 65 * Math.cos(prevA), cy + 65 * Math.sin(prevA));
-  }
-  gCtx.stroke();
-
-  gCtx.strokeStyle = '#fff';
-  gCtx.lineWidth = 2;
-  gCtx.beginPath();
-  gCtx.moveTo(cx, cy);
-  gCtx.lineTo(cx + 65 * Math.cos(angle), cy + 65 * Math.sin(angle));
-  gCtx.stroke();
-
-  gCtx.fillStyle = '#ff0000';
-  gCtx.beginPath();
-  gCtx.arc(cx, cy, 5, 0, Math.PI * 2);
-  gCtx.fill();
-
-  if (s % 5 === 0) {
-    gCtx.fillStyle = '#000';
-    gCtx.fillRect(85, 195, 70, 25);
-    gCtx.fillStyle = '#fff';
-    gCtx.font = 'bold 18px Courier New';
-    gCtx.fillText(Math.round(val) + '%', 95, 213);
-  }
+function drawGauge(s) {
+  if (s==='init') return;
+  ctx.strokeStyle = '#333'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(120, 155, 80, Math.PI, 2*Math.PI); ctx.stroke();
+  let a = Math.PI + (s/60)*Math.PI;
+  ctx.strokeStyle = '#0ff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(120, 155); ctx.lineTo(120 + 70*Math.cos(a), 155 + 70*Math.sin(a)); ctx.stroke();
 }
 
-// 9. Histogram
 function drawHistogram(s) {
-  if (s === 'init') {
-    gData.bins = [];
-    for (let i = 0; i < 12; i++) gData.bins[i] = 0;
-    for (let i = 0; i < 200; i++) {
-      const v = Math.floor((Math.random() * 12 + Math.random() * 12) / 2);
-      if (v >= 0 && v < 12) gData.bins[v]++;
-    }
-    drawAxesHelper(20, 225, 210, 190);
-    return;
-  }
-  for (let i = 0; i < 12; i++) {
-    const maxH = gData.bins[i] * 4;
-    const curH = maxH * Math.min(s / 65, 1);
-    const barX = 24 + i * 17;
-    const barY = 225 - curH;
-    gCtx.fillStyle = i < 4 ? '#4444ff' : (i < 8 ? '#00ffff' : '#4444ff');
-    gCtx.fillRect(barX, barY, 15, curH);
+  if (s==='init') { drawAxes(20, 225, 210, 190); return; }
+  for(let i=0; i<12; i++) {
+    let h = (30 + i*5) * (s/65);
+    ctx.fillStyle = '#00f'; ctx.fillRect(24 + i*17, 225-h, 15, 2);
   }
 }
 
-// 10. Spiral
 function drawSpiral(s) {
-  if (s === 'init') return;
-  const maxTheta = 6 * Math.PI;
-  const theta = maxTheta * s / 130;
-  const r = 3 + theta * 5.5;
-  const cx = 120, cy = 140;
-  const x = cx + r * Math.cos(theta);
-  const y = cy + r * Math.sin(theta);
-  if (s > 0) {
-    const pt = maxTheta * (s - 1) / 130;
-    const pr = 3 + pt * 5.5;
-    const px = cx + pr * Math.cos(pt);
-    const py = cy + pr * Math.sin(pt);
-    const hue = (s / 130) * 360;
-    gCtx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.moveTo(px, py);
-    gCtx.lineTo(x, y);
-    gCtx.stroke();
-  }
+  if (s==='init') return;
+  let a = (s/130) * 6 * Math.PI;
+  let r = a * 4;
+  ctx.fillStyle = `hsl(${s*3}, 100%, 50%)`; ctx.fillRect(120 + r*Math.cos(a), 140 + r*Math.sin(a), 3, 3);
 }
 
-// 11. Lissajous
 function drawLissajous(s) {
-  if (s === 'init') {
-    gCtx.fillStyle = '#888';
-    gCtx.font = '10px Courier New';
-    gCtx.fillText('x=sin(5t) y=sin(4t)', 8, 234);
-    return;
-  }
-  const cx = 120, cy = 132;
-  const t = s * 2 * Math.PI / 200;
-  const x = cx + 95 * Math.sin(5 * t);
-  const y = cy + 85 * Math.sin(4 * t);
-  if (s > 0) {
-    const pt = (s - 1) * 2 * Math.PI / 200;
-    const px = cx + 95 * Math.sin(5 * pt);
-    const py = cy + 85 * Math.sin(4 * pt);
-    const g = 100 + Math.floor(s * 155 / 200);
-    gCtx.strokeStyle = `rgb(0, ${g}, 255)`;
-    gCtx.lineWidth = 1.5;
-    gCtx.beginPath();
-    gCtx.moveTo(px, py);
-    gCtx.lineTo(x, y);
-    gCtx.stroke();
-  }
+  if (s==='init') return;
+  let t = (s/150) * 2 * Math.PI;
+  ctx.fillStyle = '#0af'; ctx.fillRect(120 + 90*Math.sin(3*t), 135 + 80*Math.sin(2*t), 2, 2);
 }
 
-// 12. Rose Curve
 function drawRoseCurve(s) {
-  if (s === 'init') {
-    gCtx.fillStyle = '#888';
-    gCtx.font = '10px Courier New';
-    gCtx.fillText('r = cos(7*theta)', 8, 234);
-    return;
-  }
-  const cx = 120, cy = 135;
-  const theta = s * 2 * Math.PI / 200;
-  const r = 90 * Math.cos(7 * theta);
-  const x = cx + r * Math.cos(theta);
-  const y = cy + r * Math.sin(theta);
-  if (s > 0) {
-    const pt = (s - 1) * 2 * Math.PI / 200;
-    const pr = 90 * Math.cos(7 * pt);
-    const px = cx + pr * Math.cos(pt);
-    const py = cy + pr * Math.sin(pt);
-    gCtx.strokeStyle = '#ff00ff';
-    gCtx.lineWidth = 1.5;
-    gCtx.beginPath();
-    gCtx.moveTo(px, py);
-    gCtx.lineTo(x, y);
-    gCtx.stroke();
-  }
+  if (s==='init') return;
+  let t = (s/150) * 2 * Math.PI;
+  let r = 90 * Math.cos(7*t);
+  ctx.fillStyle = '#f0f'; ctx.fillRect(120 + r*Math.cos(t), 135 + r*Math.sin(t), 2, 2);
 }
 
-// 13. Heart Curve
 function drawHeartCurve(s) {
-  if (s === 'init') return;
-  const cx = 120, cy = 130, scale = 6.5;
-  const t = s * 2 * Math.PI / 130;
-  const hx = 16 * Math.pow(Math.sin(t), 3);
-  const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-  const x = cx + hx * scale;
-  const y = cy + hy * scale;
-  if (s > 0) {
-    const pt = (s - 1) * 2 * Math.PI / 130;
-    const phx = 16 * Math.pow(Math.sin(pt), 3);
-    const phy = -(13 * Math.cos(pt) - 5 * Math.cos(2 * pt) - 2 * Math.cos(3 * pt) - Math.cos(4 * pt));
-    const px = cx + phx * scale;
-    const py = cy + phy * scale;
-    gCtx.strokeStyle = '#ff0000';
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.moveTo(px, py);
-    gCtx.lineTo(x, y);
-    gCtx.stroke();
-  }
-  if (s > 50 && s % 3 === 0) {
-    gCtx.strokeStyle = 'rgba(128, 0, 0, 0.3)';
-    gCtx.lineWidth = 1;
-    gCtx.beginPath();
-    gCtx.moveTo(cx, cy + 10);
-    gCtx.lineTo(x, y);
-    gCtx.stroke();
+  if (s==='init') return;
+  let t = (s/130) * 2 * Math.PI;
+  let hx = 16 * Math.pow(Math.sin(t), 3);
+  let hy = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+  ctx.fillStyle = '#f00'; ctx.fillRect(120 + hx*6, 130 + hy*6, 2, 2);
+}
+
+function drawVortexDots(s) {
+  if (s==='init') return;
+  for(let i=0; i<8; i++) {
+    let a = (s*5 + i*45) * Math.PI/180;
+    let r = 10 + s*0.8;
+    ctx.fillStyle = '#0ff'; ctx.fillRect(120 + r*Math.cos(a), 135 + r*Math.sin(a), 2, 2);
+    ctx.fillStyle = '#f0f'; ctx.fillRect(120 + (r+5)*Math.cos(a+0.2), 135 + (r+5)*Math.sin(a+0.2), 1, 1);
   }
 }
 
-// 14. Starfield
-function drawStarfield(s) {
-  if (s === 'init') {
-    gData.stars = [];
-    for (let i = 0; i < 40; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      gData.stars.push({
-        dx: Math.cos(angle),
-        dy: Math.sin(angle),
-        z: 1 + Math.random() * 5
-      });
-    }
-    return;
-  }
-  const cx = 120, cy = 130;
-  if (s > 0) {
-    const prevExp = 1 + (s - 1) * 0.8;
-    gData.stars.forEach(star => {
-      const r = star.z * prevExp;
-      const x = cx + star.dx * r;
-      const y = cy + star.dy * r;
-      const sz = Math.max(1, Math.floor(r / 30));
-      if (x > 0 && x < 240 && y > 25 && y < 240) {
-        gCtx.fillStyle = '#000';
-        gCtx.fillRect(x - sz - 1, y - sz - 1, sz * 2 + 3, sz * 2 + 3);
-      }
-    });
-  }
-  const expansion = 1 + s * 0.8;
-  gData.stars.forEach(star => {
-    const r = star.z * expansion;
-    const x = cx + star.dx * r;
-    const y = cy + star.dy * r;
-    const sz = Math.max(1, Math.floor(r / 30));
-    if (x > 0 && x < 240 && y > 25 && y < 240) {
-      const bright = Math.min(255, Math.floor(r * 3));
-      gCtx.fillStyle = `rgb(${bright}, ${bright}, ${bright})`;
-      gCtx.fillRect(x - sz, y - sz, sz * 2 + 1, sz * 2 + 1);
-    }
-  });
+function drawMoireLines(s) {
+  if (s==='init') return;
+  let a = s * 3.6 * Math.PI / 180;
+  ctx.strokeStyle = `rgb(${s*2}, ${255-s*2}, 255)`;
+  ctx.beginPath(); ctx.moveTo(120, 135); ctx.lineTo(120 + 110*Math.cos(a), 135 + 110*Math.sin(a)); ctx.stroke();
+  ctx.strokeStyle = `rgb(255, ${s*2}, ${s})`;
+  ctx.beginPath(); ctx.moveTo(120, 135); ctx.lineTo(120 - 110*Math.cos(a), 135 - 110*Math.sin(a)); ctx.stroke();
 }
 
-// 15. Matrix Rain
-function drawMatrixRain(s) {
-  if (s === 'init') {
-    gData.cols = [];
-    for (let i = 0; i < 15; i++) {
-      gData.cols.push({
-        y: -(Math.random() * 10) * 14,
-        speed: (1 + Math.floor(Math.random() * 3)) * 2,
-        len: 5 + Math.floor(Math.random() * 8)
-      });
-    }
-    return;
-  }
-  gCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-  gCtx.fillRect(0, 25, 240, 215);
-
-  gCtx.font = 'bold 14px Courier New';
-  gData.cols.forEach((col, i) => {
-    col.y += col.speed;
-    const x = i * 16 + 2;
-    for (let j = 0; j < col.len; j++) {
-      const y = col.y - j * 14;
-      if (y < 26 || y > 235) continue;
-      const c = String.fromCharCode(33 + ((s * 7 + i * 13 + j * 3) % 94));
-      if (j === 0) { gCtx.fillStyle = '#fff'; }
-      else { const g = 200 - j * Math.floor(150 / col.len); gCtx.fillStyle = `rgb(0, ${g}, 0)`; }
-      gCtx.fillText(c, x, y);
-    }
-    if (col.y - col.len * 14 > 240) {
-      col.y = 26 - Math.floor(Math.random() * 5) * 14;
-      col.speed = (1 + Math.floor(Math.random() * 3)) * 2;
-      col.len = 5 + Math.floor(Math.random() * 8);
-    }
-  });
+function drawSystemInfo(s) {
+  ctx.fillStyle = '#fff'; ctx.font = '16px Courier New';
+  ctx.fillText("CPU:   160 MHz", 15, 75);
+  ctx.fillText("Heap:  34.2 KB", 15, 110);
+  ctx.fillText("Flash: 4 MB", 15, 145);
+  ctx.fillText("Chip:  D8B1C7", 15, 180);
+  ctx.strokeStyle = '#444'; ctx.strokeRect(8, 45, 224, 180);
 }
 
-// ========== Start ==========
-startGallery();
+init();
 </script>
-
 </body>
 </html>

@@ -1,10 +1,25 @@
-# Secrets
-dual_monitor/config.h
+# Arduino
+build/
+bin/
+*.elf
+*.bin
+*.hex
+*.exe
+*.o
+*.a
+*.la
+*.lo
 
 # macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
 
-# Arduino build
-build/
-*.elf
-*.bin
+# Others
+.vscode/
+.idea/
+*.swp
+*.bak
+*.tmp
+node_modules/

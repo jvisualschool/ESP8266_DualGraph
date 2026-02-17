@@ -892,7 +892,12 @@ void loop() {
     currentStep++;
     delay(FRAME_DELAY); // 2x faster animation
   } else {
-    delay(2000); // Hold for 2s
+    // 3. Hold completed graph ("완성 후 유지")
+    if (currentGraph == NUM_GRAPHS - 1) {
+      delay(7000); // 7s for last graph (System Info)
+    } else {
+      delay(2000); // 2s for others
+    }
     currentGraph = (currentGraph + 1) % NUM_GRAPHS;
     needsInit = true;
   }
