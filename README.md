@@ -2,6 +2,14 @@
 
 ESP8266(NodeMCU v2)을 활용하여 TFT(ST7789)와 OLED(SSD1306) 듀얼 디스플레이에 16종의 하이테크 그래프를 시각화하는 프로젝트입니다. 하드웨어 레지스터 직접 제어를 통해 소프트웨어 SPI 한계를 극복하고 초고속 렌더링을 구현했습니다.
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshot1.png" width="400" />
+  <img src="screenshot2.png" width="400" />
+</p>
+
+
 ## 🚀 Key Features
 
 - **Turbo Speed**: ESP8266 CPU를 160MHz로 오버클럭하여 처리 속도 극대화.
